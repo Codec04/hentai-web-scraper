@@ -15,6 +15,7 @@ except ModuleNotFoundError as exception:
     input()
     quit()
 
+allowed_files = ["jpg", "jpeg", "png", "gif"]
 subreddits = ["hentai", "Nekomimi", "Sukebei"]
 
 
@@ -40,32 +41,11 @@ def reddit_scraper():
                 except FileExistsError:
                     pass
 
-                if ".jpg" in image_url:
-                    print(f"image url found: {image_url}")
-
-                    image_data = requests.get(image_url)
-                    open(f"hentai/reddit/r_{subreddit}/image_{str(image)}.jpg", "wb").write(image_data.content)
-
-                elif ".jpeg" in image_url:
-                    print(f"image url found: {image_url}")
-
-                    image_data = requests.get(image_url)
-                    open(f"hentai/reddit/r_{subreddit}/image_{str(image)}.jpeg", "wb").write(image_data.content)
-
-                elif ".png" in image_url:
-                    print(f"image url found: {image_url}")
-
-                    image_data = requests.get(image_url)
-                    open(f"hentai/reddit/r_{subreddit}/image_{str(image)}.png", "wb").write(image_data.content)
-
-                elif ".gif" in image_url:
-                    print(f"image url found: {image_url}")
-
-                    image_data = requests.get(image_url)
-                    open(f"hentai/reddit/r_{subreddit}/image_{str(image)}.gif", "wb").write(image_data.content)
-
-                else:
-                    continue
+                for allowed_file in allowed_files:
+                    if image_url.split(".")[-1] == allowed_file:
+                        print(f"image url found: {image_url}")
+                        image_data = requests.get(image_url)
+                        open(f"hentai/reddit/r_{subreddit}/image_{str(image)}.{allowed_file}", "wb").write(image_data.content)
 
         except IndexError:
             continue
@@ -84,7 +64,6 @@ def nhentai_scraper():
 
     for _hentai in hentai.Utils.get_homepage().popular_now:
         for image_url in _hentai.image_urls:
-            print(f"image url found: {image_url}")
 
             try:
                 os.mkdir(os.path.join("hentai/nhentai", image_url.split("/")[4]))
@@ -92,8 +71,11 @@ def nhentai_scraper():
             except FileExistsError:
                 pass
 
-            image_data = requests.get(image_url)
-            open(f"hentai/nhentai/{os.path.join(image_url.split('/')[4], image_url.split('/')[5])}", "wb").write(image_data.content)
+            for allowed_file in allowed_files:
+                if image_url.split(".")[-1] == allowed_file:
+                    print(f"image url found: {image_url}")
+                    image_data = requests.get(image_url)
+                    open(f"hentai/nhentai/{os.path.join(image_url.split('/')[4], image_url.split('/')[5])}", "wb").write(image_data.content)
 
     print("finished scraping nhentai")
 
